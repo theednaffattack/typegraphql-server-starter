@@ -2,7 +2,8 @@ import {
   Arg,
   Resolver,
   Query,
-  Mutation
+  Mutation,
+  Authorized
   // FieldResolver,
   // Root
 } from "type-graphql";
@@ -12,6 +13,7 @@ import { RegisterInput } from "./register/RegisterInput";
 
 @Resolver()
 export class RegisterResolver {
+  @Authorized()
   @Query(() => String, { name: "helloWorld", nullable: false })
   async hello() {
     return await "Hello World";

@@ -20,7 +20,13 @@ const main = async () => {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [MeResolver, RegisterResolver, LoginResolver]
+    resolvers: [MeResolver, RegisterResolver, LoginResolver],
+    authChecker: ({ context: { req } }) => {
+      // I can read context here
+      // cehck permission vs what's in the db "roles" argument
+      // that comes from `@Authorized`, eg,. ["ADMIN", "MODERATOR"]
+      return !!req.session.userId;
+    }
   });
 
   const apolloServer = new ApolloServer({
