@@ -38,9 +38,9 @@ const main = async () => {
         return error;
       }
 
-      if (error.originalError instanceof ArgumentValidationError) {
-        const { extensions = {}, locations, message, path } = error;
+      const { extensions = {}, locations, message, path } = error;
 
+      if (error.originalError instanceof ArgumentValidationError) {
         extensions.code = "GRAPHQL_VALIDATION_FAILED";
 
         return {
@@ -51,9 +51,14 @@ const main = async () => {
         };
       }
 
-      error.message = "Internal Server Error";
+      //   error.message = "Internal Server Error";
 
-      return error;
+      return {
+        message: extensions.exception.stacktrace[0].replace("Error: ", ""),
+        path,
+        locations
+        // extensions
+      };
     }
   });
 
