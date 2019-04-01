@@ -5,8 +5,8 @@ import { Field, ID, ObjectType, Root } from "type-graphql";
 @Entity()
 export class User extends BaseEntity {
   @Field(() => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @Field()
   @Column()
@@ -27,4 +27,7 @@ export class User extends BaseEntity {
 
   @Column()
   password: string;
+
+  @Column("bool", { default: false })
+  confirmed: boolean;
 }

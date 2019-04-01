@@ -2,7 +2,7 @@ import { Arg, Resolver, Mutation, Ctx } from "type-graphql";
 import bcrypt from "bcryptjs";
 
 import { User } from "../../entity/User";
-import { MyContext } from "src/types/MyContext";
+import { MyContext } from "../../types/MyContext";
 
 @Resolver()
 export class LoginResolver {
@@ -13,7 +13,6 @@ export class LoginResolver {
     @Ctx() ctx: MyContext
   ): Promise<User | null> {
     const user = await User.findOne({ where: { email } });
-
     // if we can't find a user return an obscure result (null) to prevent fishing
     if (!user) {
       return null;
@@ -24,6 +23,12 @@ export class LoginResolver {
     // if the supplied password is invalid return early
     if (!valid) {
       return null;
+    }
+
+    // if the user has not confirmed via email
+    if (!user.confirmed) {
+      throw new Error("Please confirm your account");
+      // return null;
     }
 
     // all is well return the user we found
