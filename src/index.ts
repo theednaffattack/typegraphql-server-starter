@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { ApolloServer, ApolloError } from "apollo-server-express";
 import * as Express from "express";
-import { buildSchema, ArgumentValidationError } from "type-graphql";
+import { ArgumentValidationError } from "type-graphql";
 import { createConnection } from "typeorm";
 import { GraphQLFormattedError, GraphQLError } from "graphql";
 import session from "express-session";
@@ -10,6 +10,7 @@ import cors from "cors";
 
 import { redis } from "./redis";
 import { redisSessionPrefix } from "./constants";
+import { createSchema } from "./global-utils/createSchema";
 // import { RegisterResolver } from "./modules/user/Register";
 // import { LoginResolver } from "./modules/user/Login";
 // import { MeResolver } from "./modules/user/Me";
@@ -20,15 +21,7 @@ const RedisStore = connectRedis(session);
 const main = async () => {
   await createConnection();
 
-  const schema = await buildSchema({
-    resolvers: [__dirname + "/modules/**/*.ts"],
-    authChecker: ({ context: { req } }) => {
-      // I can read context here
-      // cehck permission vs what's in the db "roles" argument
-      // that comes from `@Authorized`, eg,. ["ADMIN", "MODERATOR"]
-      return !!req.session.userId;
-    }
-  });
+  const schema = await createSchema();
 
   const apolloServer = new ApolloServer({
     schema,
@@ -54,6 +47,18 @@ const main = async () => {
 
       //   error.message = "Internal Server Error";
 
+      console.error(
+        JSON.stringify(
+          {
+            message: extensions.exception.stacktrace,
+            path,
+            locations
+            // extensions
+          },
+          null,
+          2
+        )
+      );
       return {
         message: extensions.exception.stacktrace[0].replace("Error: ", ""),
         path,

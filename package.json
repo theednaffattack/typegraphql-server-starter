@@ -30,11 +30,15 @@
     "@types/express-session": "^1.15.12",
     "@types/graphql": "^14.2.0",
     "@types/ioredis": "^4.0.10",
+    "@types/jest": "^24.0.11",
     "@types/node": "^11.12.2",
     "@types/nodemailer": "^4.6.7",
     "@types/uuid": "^3.4.4",
+    "casual": "^1.6.0",
     "chalk": "^2.4.2",
+    "jest": "^24.5.0",
     "nodemon": "^1.18.10",
+    "ts-jest": "^24.0.1",
     "ts-node": "^8.0.3",
     "ts-node-dev": "^1.0.0-pre.32",
     "typescript": "^3.4.1"
@@ -42,6 +46,8 @@
   "scripts": {
     "start": "ts-node -r dotenv/config src/index.ts",
     "dev": "nodemon -r dotenv/config --exec ts-node src/index.ts",
-    "tsndev": "ts-node-dev --respawn src/index.ts"
+    "tsndev": "ts-node-dev --respawn src/index.ts",
+    "db:setup": "ts-node ./src/test-utils/setup.ts",
+    "test": "npm run db:setup && TERM=dumb jest"
   }
 }

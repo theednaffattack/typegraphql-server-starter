@@ -12,6 +12,8 @@ http://www.postgresqltutorial.com/
 
 \df describe functions
 
+\dt show tables
+
 LOGIN COMMANDS
 
 psql -d mydb -U myuser
