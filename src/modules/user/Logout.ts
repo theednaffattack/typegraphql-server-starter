@@ -12,9 +12,12 @@ export class LogoutResolver {
       return ctx.req.session!.destroy(err => {
         if (err) {
           console.error(err);
-          reject(false);
+          return reject(false);
         }
-        resolve(true);
+
+        ctx.res.clearCookie("qid");
+
+        return resolve(true);
       });
     });
   }

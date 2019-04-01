@@ -32,7 +32,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema,
-    context: ({ req }: any) => ({ req }),
+    context: ({ req, res }: any) => ({ req, res }),
     // custom error handling from: https://github.com/19majkel94/type-graphql/issues/258
     formatError: (error: GraphQLError): GraphQLFormattedError => {
       if (error.originalError instanceof ApolloError) {
