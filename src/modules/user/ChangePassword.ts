@@ -1,19 +1,20 @@
-import { Resolver, Mutation, Arg } from "type-graphql";
+import { Resolver, Mutation, Arg, Ctx } from "type-graphql";
 import bcrypt from "bcryptjs";
 
 import { redis } from "../../redis";
 import { User } from "../../entity/User";
 import { forgotPasswordPrefix } from "../constants/redisPrefixes";
 import { ChangePasswordInput } from "./changePassword/ChangePasswordInput";
+import { MyContext } from "src/types/MyContext";
 
 @Resolver()
 export class ChangePasswordResolver {
   @Mutation(() => User, { nullable: true })
-  async changePassword(@Arg("data")
-  {
-    token,
-    password
-  }: ChangePasswordInput): Promise<User | null> {
+  async changePassword(
+    @Arg("data")
+    { token, password }: ChangePasswordInput,
+    @Ctx() ctx: MyContext
+  ): Promise<User | null> {
     const userId = await redis.get(forgotPasswordPrefix + token);
     console.log(token);
     console.log(userId);
@@ -38,6 +39,9 @@ export class ChangePasswordResolver {
 
     // save updated password
     await user.save();
+
+    // login in the user
+    ctx.req.session!.userId = user.id;
 
     return user;
   }
