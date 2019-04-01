@@ -48,6 +48,7 @@
     "dev": "nodemon -r dotenv/config --exec ts-node src/index.ts",
     "tsndev": "ts-node-dev --respawn src/index.ts",
     "db:setup": "ts-node ./src/test-utils/setup.ts",
-    "test": "npm run db:setup && TERM=dumb jest"
+    "test": "npm run db:setup && TERM=dumb jest --detectOpenHandles",
+    "tdev": "npm run db:setup && TERM=dumb jest --watch --detectOpenHandles"
   }
 }

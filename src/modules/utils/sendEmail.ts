@@ -2,9 +2,6 @@ import nodemailer from "nodemailer";
 
 // async..await is not allowed in global scope, must use a wrapper
 export async function sendEmail(email: string, url: string) {
-  console.log("view args");
-  console.log(email);
-  console.log(url);
   // Generate test SMTP service account from ethereal.email
   // Only needed if you don't have a real mail account for testing
   const account = await nodemailer.createTestAccount();
