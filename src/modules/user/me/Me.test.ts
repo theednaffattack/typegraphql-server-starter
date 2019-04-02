@@ -24,13 +24,6 @@ const mockUser = {
   password: casual.password
 };
 
-// const mockUser2 = {
-//   firstName: "bob",
-//   lastName: "bob",
-//   email: "bob@bob.com",
-//   password: "skdjfksajfdksajfkjaskdfj"
-// };
-
 const meQuery = `
 {
     me{
@@ -45,8 +38,6 @@ const meQuery = `
 
 describe("Me", () => {
   it("get user info", async done => {
-    // call resolver
-
     const user = await User.create({
       firstName: mockUser.firstName,
       lastName: mockUser.lastName,
@@ -54,13 +45,38 @@ describe("Me", () => {
       password: mockUser.password
     }).save();
 
+    // call resolver
     const response = await gCall({
       source: meQuery,
       userId: user.id
     });
-    console.log(user);
-    console.log(JSON.stringify(response));
 
+    expect(response).toMatchObject({
+      data: {
+        me: {
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email
+        }
+      }
+    });
+    done();
+  });
+
+  it("return null", async done => {
+    // call resolver
+    const response = await gCall({
+      source: meQuery
+    });
+
+    // basically a test for an authenticated (logged in)
+    // user
+    expect(response).toMatchObject({
+      data: {
+        me: null
+      }
+    });
     done();
   });
 });

@@ -20,3 +20,7 @@ psql -d mydb -U myuser
 psql -h myhost -d mydb -U myuser
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+DROP TABLE <table name> CASCADE
+example:
+DROP TABLE product CASCADE

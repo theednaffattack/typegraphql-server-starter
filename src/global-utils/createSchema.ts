@@ -7,12 +7,18 @@ import { LoginResolver } from "../modules/user/Login";
 import { LogoutResolver } from "../modules/user/Logout";
 import { MeResolver } from "../modules/user/Me";
 import { RegisterResolver } from "../modules/user/Register";
+import {
+  CreateUserResolver,
+  CreateProductResolver
+} from "../modules/user/CreateUser";
 
 export const createSchema = () =>
   buildSchema({
     resolvers: [
       ChangePasswordResolver,
       ConfirmUserResolver,
+      CreateProductResolver,
+      CreateUserResolver,
       ForgotPasswordResolver,
       LoginResolver,
       LogoutResolver,
