@@ -11,6 +11,10 @@ import cors from "cors";
 import { redis } from "./redis";
 import { redisSessionPrefix } from "./constants";
 import { createSchema } from "./global-utils/createSchema";
+import queryComplexity, {
+  fieldConfigEstimator,
+  simpleEstimator
+} from "graphql-query-complexity";
 // import { RegisterResolver } from "./modules/user/Register";
 // import { LoginResolver } from "./modules/user/Login";
 // import { MeResolver } from "./modules/user/Me";
@@ -47,25 +51,29 @@ const main = async () => {
 
       //   error.message = "Internal Server Error";
 
-      console.error(
-        JSON.stringify(
-          {
-            message: extensions.exception.stacktrace,
-            path,
-            locations
-            // extensions
-          },
-          null,
-          2
-        )
-      );
       return {
         message: extensions.exception.stacktrace[0].replace("Error: ", ""),
         path,
         locations
         // extensions
       };
-    }
+    },
+    validationRules: [
+      queryComplexity({
+        // queries above this threshold are rejected
+        maximumComplexity: 8,
+        variables: {},
+        onComplete: (complexity: number) => {
+          console.log("Query Complexity:", complexity);
+        },
+        estimators: [
+          fieldConfigEstimator(),
+          simpleEstimator({
+            defaultComplexity: 1
+          })
+        ]
+      }) as any
+    ]
   });
 
   const app = Express.default();
