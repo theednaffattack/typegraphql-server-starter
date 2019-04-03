@@ -59,20 +59,20 @@ const main = async () => {
       };
     },
     validationRules: [
-      queryComplexity({
-        // queries above this threshold are rejected
-        maximumComplexity: 8,
-        variables: {},
-        onComplete: (complexity: number) => {
-          console.log("Query Complexity:", complexity);
-        },
-        estimators: [
-          fieldConfigEstimator(),
-          simpleEstimator({
-            defaultComplexity: 1
-          })
-        ]
-      }) as any
+      // queryComplexity({
+      //   // queries above this threshold are rejected
+      //   maximumComplexity: 8,
+      //   variables: {},
+      //   onComplete: (complexity: number) => {
+      //     console.log("Query Complexity:", complexity);
+      //   },
+      //   estimators: [
+      //     fieldConfigEstimator(),
+      //     simpleEstimator({
+      //       defaultComplexity: 1
+      //     })
+      //   ]
+      // }) as any
     ]
   });
 
