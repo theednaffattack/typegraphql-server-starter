@@ -11,10 +11,10 @@ import cors from "cors";
 import { redis } from "./redis";
 import { redisSessionPrefix } from "./constants";
 import { createSchema } from "./global-utils/createSchema";
-import queryComplexity, {
-  fieldConfigEstimator,
-  simpleEstimator
-} from "graphql-query-complexity";
+// import queryComplexity, {
+//   fieldConfigEstimator,
+//   simpleEstimator
+// } from "graphql-query-complexity";
 // import { RegisterResolver } from "./modules/user/Register";
 // import { LoginResolver } from "./modules/user/Login";
 // import { MeResolver } from "./modules/user/Me";
