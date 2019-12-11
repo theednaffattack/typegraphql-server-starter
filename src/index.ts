@@ -140,8 +140,6 @@ const main = async () => {
       }
     });
   } else {
-    // if (nodeEnvIsDev || nodeEnvIs_NOT_Prod) {
-
     sessionMiddleware = session({
       name: "qid",
       secret: process.env.SESSION_SECRET as string,
@@ -161,24 +159,6 @@ const main = async () => {
   }
 
   app.use(sessionMiddleware);
-
-  // app.use("/graphql", (req, res, next) => {
-  //   const startHrTime = process.hrtime();
-  //   res.on("finish", () => {
-  //     if (req.body && req.body.operationName) {
-  //       const elapsedHrTime = process.hrtime(startHrTime);
-  //       const elapsedTimeInMs =
-  //         elapsedHrTime[0] * 1000 + elapsedHrTime[1] / 1e6;
-  //       console.log(`timing ${req.body.operationName}`, elapsedTimeInMs);
-  //       logger().info({
-  //         type: "timing",
-  //         name: req.body.operationName,
-  //         ms: elapsedTimeInMs
-  //       });
-  //     }
-  //   });
-  //   next();
-  // });
 
   apolloServer.applyMiddleware({ app, cors: false });
 
