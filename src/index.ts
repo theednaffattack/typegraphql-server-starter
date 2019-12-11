@@ -8,12 +8,19 @@ import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
 import internalIp from "internal-ip";
+// import logger from "pino";
 
 import { redis } from "./redis";
 import { redisSessionPrefix } from "./constants";
 import { createSchema } from "./global-utils/createSchema";
 
 const RedisStore = connectRedis(session);
+
+let sessionMiddleware: Express.RequestHandler;
+
+// const nodeEnvIsDev = process.env.NODE_ENV === "development";
+// const nodeEnvIs_NOT_Prod = process.env.NODE_ENV !== "production";
+const nodeEnvIsProd = process.env.NODE_ENV === "production";
 
 const main = async () => {
   await createConnection();
@@ -95,8 +102,28 @@ const main = async () => {
     })
   );
 
-  app.use(
-    session({
+  // app.use(
+  //   session({
+  //     name: "qid",
+  //     secret: process.env.SESSION_SECRET as string,
+  //     store: new RedisStore({
+  //       client: redis as any,
+  //       prefix: redisSessionPrefix
+  //     }),
+  //     resave: false,
+  //     saveUninitialized: false,
+  //     cookie: {
+  //       httpOnly: true,
+  //       secure: process.env.NODE_ENV === "production",
+  //       maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+  //     }
+  //   })
+  // );
+
+  // needed to remove domain from our cookie
+  // in non-production environments
+  if (nodeEnvIsProd) {
+    sessionMiddleware = session({
       name: "qid",
       secret: process.env.SESSION_SECRET as string,
       store: new RedisStore({
@@ -107,11 +134,51 @@ const main = async () => {
       saveUninitialized: false,
       cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+        secure: true,
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days,
+        domain: "eddienaff.dev"
       }
-    })
-  );
+    });
+  } else {
+    // if (nodeEnvIsDev || nodeEnvIs_NOT_Prod) {
+
+    sessionMiddleware = session({
+      name: "qid",
+      secret: process.env.SESSION_SECRET as string,
+      store: new RedisStore({
+        client: redis as any,
+        prefix: redisSessionPrefix
+      }),
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        secure: true,
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days,
+        domain: `${homeIp}`
+      }
+    });
+  }
+
+  app.use(sessionMiddleware);
+
+  // app.use("/graphql", (req, res, next) => {
+  //   const startHrTime = process.hrtime();
+  //   res.on("finish", () => {
+  //     if (req.body && req.body.operationName) {
+  //       const elapsedHrTime = process.hrtime(startHrTime);
+  //       const elapsedTimeInMs =
+  //         elapsedHrTime[0] * 1000 + elapsedHrTime[1] / 1e6;
+  //       console.log(`timing ${req.body.operationName}`, elapsedTimeInMs);
+  //       logger().info({
+  //         type: "timing",
+  //         name: req.body.operationName,
+  //         ms: elapsedTimeInMs
+  //       });
+  //     }
+  //   });
+  //   next();
+  // });
 
   apolloServer.applyMiddleware({ app, cors: false });
 
