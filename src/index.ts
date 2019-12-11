@@ -78,10 +78,20 @@ const main = async () => {
 
   const app = Express.default();
 
+  const whitelist = ["http://localhost:3000", "http://192.168.1.24:3000"];
+
   app.use(
     cors({
       credentials: true,
-      origin: "http://localhost:3000"
+      origin: function(origin, callback) {
+        console.log("VIEW ORIGIN");
+        console.log(origin);
+        if (whitelist.indexOf(origin) !== -1 || !origin) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      }
     })
   );
 
