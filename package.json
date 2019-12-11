@@ -43,6 +43,7 @@
     "chalk": "^2.4.2",
     "jest": "^24.5.0",
     "nodemon": "^1.18.10",
+    "pino-pretty": "^3.5.0",
     "ts-jest": "^24.0.1",
     "ts-node": "^8.0.3",
     "ts-node-dev": "^1.0.0-pre.32",
