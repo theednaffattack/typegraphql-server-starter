@@ -14,6 +14,8 @@
     "express-session": "^1.15.6",
     "graphql": "^14.2.0",
     "graphql-query-complexity": "^0.2.3",
+    "install": "^0.13.0",
+    "internal-ip": "^5.0.0",
     "ioredis": "^4.9.0",
     "nodemailer": "^6.0.0",
     "pg": "^7.9.0",
@@ -46,6 +48,7 @@
   },
   "scripts": {
     "start": "ts-node -r dotenv/config src/index.ts",
+    "local-start": "tsc && node -r dotenv/config src/index.ts",
     "dev": "nodemon -r dotenv/config --exec ts-node src/index.ts",
     "tsndev": "ts-node-dev --respawn src/index.ts",
     "db:setup": "ts-node ./src/test-utils/setup.ts",

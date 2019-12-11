@@ -7,18 +7,11 @@ import { GraphQLFormattedError, GraphQLError } from "graphql";
 import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
+import internalIp from "internal-ip";
 
 import { redis } from "./redis";
 import { redisSessionPrefix } from "./constants";
 import { createSchema } from "./global-utils/createSchema";
-// import queryComplexity, {
-//   fieldConfigEstimator,
-//   simpleEstimator
-// } from "graphql-query-complexity";
-// import { RegisterResolver } from "./modules/user/Register";
-// import { LoginResolver } from "./modules/user/Login";
-// import { MeResolver } from "./modules/user/Me";
-// import { ConfirmUserResolver } from "./modules/user/ConfirmUser";
 
 const RedisStore = connectRedis(session);
 
@@ -77,16 +70,22 @@ const main = async () => {
     ]
   });
 
+  const homeIp = internalIp.v4.sync();
+
   const app = Express.default();
 
-  const whitelist = ["http://localhost:3000", "http://192.168.1.24:3000"];
+  const whitelist = [
+    "http://localhost:3000",
+    "http://localhost:4000",
+    `http://${homeIp}:3000`,
+    `http://${homeIp}:4000`
+  ];
 
+  // we're bypassing cors used by apollo-server-express here
   app.use(
     cors({
       credentials: true,
       origin: function(origin, callback) {
-        console.log("VIEW ORIGIN");
-        console.log(origin);
         if (whitelist.indexOf(origin) !== -1 || !origin) {
           callback(null, true);
         } else {
@@ -118,7 +117,8 @@ const main = async () => {
 
   app.listen(4000, () => {
     console.log(
-      "server started! GraphQL Playground available at:\nhttp://localhost:4000/graphql"
+      `server started! GraphQL Playground available at:\nhttp://localhost:4000/graphql\n
+      on LAN at: http://${homeIp}:4000/graphql`
     );
   });
 };
