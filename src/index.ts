@@ -29,6 +29,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema,
+    playground: { version: "1.7.25", endpoint: "/graphql" },
     context: ({ req, res }: any) => ({ req, res }),
     // custom error handling from: https://github.com/19majkel94/type-graphql/issues/258
     formatError: (error: GraphQLError): GraphQLFormattedError => {
